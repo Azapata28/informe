@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico SEO — Direct English Torrelavega</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f6f5f2;
+    --text: #1a1a1a;
+    --text-muted: #6b6b6b;
+    --border: rgba(0,0,0,0.10);
+    --border-strong: rgba(0,0,0,0.22);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --accent: #1a1a1a;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a;
+      --bg-secondary: #242424;
+      --text: #f0ede8;
+      --text-muted: #9a9a9a;
+      --border: rgba(255,255,255,0.10);
+      --border-strong: rgba(255,255,255,0.22);
+      --accent: #f0ede8;
+    }
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg-secondary);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    background: var(--bg);
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    padding: 2.5rem 2rem;
+  }
+
+  /* Header */
+  .header {
+    border-left: 3px solid var(--text);
+    padding-left: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .header .label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+  }
+
+  .header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 6px;
+  }
+
+  .header .meta {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  /* Section */
+  .section { margin-bottom: 2.5rem; }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  hr.divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2.5rem 0;
+  }
+
+  /* Exec box */
+  .exec-box {
+    background: var(--bg-secondary);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text-muted);
+  }
+
+  /* Hallazgos */
+  .hallazgo {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+
+  .hallazgo:hover { border-color: var(--border-strong); }
+
+  .hallazgo-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--bg);
+    user-select: none;
+  }
+
+  .h-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .h-num.urgente { background: #FCEBEB; color: #A32D2D; }
+  .h-num.medio   { background: #FAEEDA; color: #854F0B; }
+  .h-num.info    { background: #E6F1FB; color: #185FA5; }
+  .h-num.pos     { background: #EAF3DE; color: #3B6D11; }
+
+  .h-title {
+    font-size: 14px;
+    font-weight: 500;
+    flex: 1;
+    line-height: 1.4;
+  }
+
+  .h-badge {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 99px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .h-badge.urgente { background: #FCEBEB; color: #A32D2D; }
+  .h-badge.medio   { background: #FAEEDA; color: #854F0B; }
+  .h-badge.info    { background: #E6F1FB; color: #185FA5; }
+  .h-badge.pos     { background: #EAF3DE; color: #3B6D11; }
+
+  .h-chev {
+    font-size: 10px;
+    color: var(--text-muted);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .hallazgo.open .h-chev { transform: rotate(180deg); }
+
+  .hallazgo-body {
+    display: none;
+    padding: 0 16px 16px 54px;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  .hallazgo.open .hallazgo-body { display: block; }
+
+  /* Keywords */
+  .kw-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .kw-pill {
+    font-size: 12.5px;
+    padding: 5px 13px;
+    border-radius: 99px;
+    border: 1px solid var(--border-strong);
+    color: var(--text-muted);
+    background: var(--bg-secondary);
+  }
+
+  /* Fases */
+  .fases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 10px;
+  }
+
+  .fase-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    background: var(--bg);
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+
+  .fase-card:hover { border-color: var(--border-strong); }
+  .fase-card.active { border: 2px solid var(--text); }
+
+  .fase-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+  }
+
+  .fase-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .fase-tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 99px;
+    margin-bottom: 10px;
+  }
+
+  .tag-urgente { background: #FCEBEB; color: #A32D2D; }
+  .tag-medio   { background: #FAEEDA; color: #854F0B; }
+  .tag-baja    { background: #EAF3DE; color: #3B6D11; }
+
+  .fase-detail {
+    display: none;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .fase-card.active .fase-detail { display: block; }
+
+  .fase-item {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.65;
+    padding: 3px 0 3px 14px;
+    position: relative;
+  }
+
+  .fase-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--text-muted);
+  }
+
+  /* Estimación */
+  .est-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .est-card {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+  }
+
+  .est-label {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+    line-height: 1.4;
+  }
+
+  .est-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .est-total {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .est-total-label {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .est-total-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  /* Inversión */
+  .inv-box {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+  }
+
+  .inv-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .inv-row:last-child { border-bottom: none; }
+
+  .inv-label { color: var(--text-muted); }
+
+  .inv-val {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    white-space: nowrap;
+  }
+
+  /* Tiempo invertido */
+  .tiempo-box {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+  }
+
+  .tiempo-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .tiempo-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 13.5px;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .tiempo-row:last-child { border-bottom: none; padding-top: 14px; }
+
+  .tiempo-total {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .nota-final {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.65;
+    border-top: 1px solid var(--border);
+    padding-top: 1.25rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 520px) {
+    .container { padding: 1.75rem 1.25rem; }
+    .header h1 { font-size: 22px; }
+    .fases-grid { grid-template-columns: 1fr 1fr; }
+    .est-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="label">Diagnóstico SEO inicial · 2025</div>
+    <h1>Direct English España</h1>
+    <div class="meta">Posicionamiento local · Torrelavega</div>
+  </div>
+
+  <!-- Resumen ejecutivo -->
+  <div class="section">
+    <div class="section-title">Resumen ejecutivo</div>
+    <div class="exec-box">
+      El sitio de Direct English tiene una base válida para competir en búsquedas locales: comunica con claridad los servicios de academia de inglés en Torrelavega, cursos para niños y adultos, preparación de exámenes y contacto local. Sin embargo, existen factores que limitan el rendimiento SEO: páginas residuales indexables, contenido placeholder, enlaces al dominio de staging y una arquitectura de cursos dispersa. La competencia local ya muestra señales de posicionamiento geográfico fuerte en la zona.
+    </div>
+  </div>
+
+  <!-- Hallazgos -->
+  <div class="section">
+    <div class="section-title">Hallazgos principales — haz clic para ver el detalle</div>
+
+    <div class="hallazgo" onclick="this.classList.toggle('open')">
+      <div class="hallazgo-header">
+        <div class="h-num urgente">1</div>
+        <div class="h-title">Páginas de plantilla visibles públicamente</div>
+        <div class="h-badge urgente">Urgente</div>
+        <div class="h-chev">▼</div>
+      </div>
+      <div class="hallazgo-body">URLs públicas relacionadas con headers y footers del tema (ej. edublink_footer) están accesibles e indexables por Google. No aportan valor SEO, dispersan la autoridad del dominio, generan ruido de indexación y debilitan la calidad global del sitio.</div>
+    </div>
+
+    <div class="hallazgo" onclick="this.classList.toggle('open')">
+      <div class="hallazgo-header">
+        <div class="h-num urgente">2</div>
+        <div class="h-title">Contenido placeholder en páginas importantes</div>
+        <div class="h-badge urgente">Urgente</div>
+        <div class="h-chev">▼</div>
+      </div>
+      <div class="hallazgo-body">En páginas como "Exámenes Oficiales" aparecen textos de relleno y contenido con fechas antiguas. Esto debilita la credibilidad del sitio frente al usuario y puede afectar negativamente la valoración de calidad que hace Google al rastrear el sitio.</div>
+    </div>
+
+    <div class="hallazgo" onclick="this.classList.toggle('open')">
+      <div class="hallazgo-header">
+        <div class="h-num urgente">3</div>
+        <div class="h-title">Enlaces apuntando al dominio de staging</div>
+        <div class="h-badge urgente">Urgente</div>
+        <div class="h-chev">▼</div>
+      </div>
+      <div class="hallazgo-body">Páginas públicas contienen enlaces que dirigen a directenglish.emberalab.com en lugar del dominio definitivo. Esto genera fragmentación de autoridad, rastreo inconsistente por parte de Google y una experiencia de navegación deficiente para el usuario.</div>
+    </div>
+
+    <div class="hallazgo" onclick="this.classList.toggle('open')">
+      <div class="hallazgo-header">
+        <div class="h-num medio">4</div>
+        <div class="h-title">Canibalización SEO entre páginas de cursos</div>
+        <div class="h-badge medio">Medio</div>
+        <div class="h-chev">▼</div>
+      </div>
+      <div class="hallazgo-body">Varias URLs con contenido muy similar compiten por las mismas palabras clave. Google no puede identificar con claridad cuál es la página principal para una búsqueda concreta, lo que diluye la relevancia y dificulta el posicionamiento.</div>
+    </div>
+
+    <div class="hallazgo" onclick="this.classList.toggle('open')">
+      <div class="hallazgo-header">
+        <div class="h-num info">5</div>
+        <div class="h-title">Competencia local con mensajes geográficos directos</div>
+        <div class="h-badge info">Contexto</div>
+        <div class="h-chev">▼</div>
+      </div>
+      <div class="hallazgo-body">Competidores como Brian's School, Clases MC y Elephant English muestran una comunicación muy enfocada en su propuesta local y educativa, lo que refuerza su relevancia para búsquedas geográficas como "academia de inglés en Torrelavega".</div>
+    </div>
+
+    <div class="hallazgo" onclick="this.classList.toggle('open')">
+      <div class="hallazgo-header">
+        <div class="h-num pos">6</div>
+        <div class="h-title">Base semántica válida para SEO local</div>
+        <div class="h-badge pos">Positivo</div>
+        <div class="h-chev">▼</div>
+      </div>
+      <div class="hallazgo-body">La home y páginas internas ya incluyen señales valiosas: "academia de inglés en Torrelavega", cursos por edades, preparación Cambridge y Aptis, y formularios de contacto. Existe una buena base sobre la que construir el posicionamiento.</div>
+    </div>
+  </div>
+
+  <!-- Keywords -->
+  <div class="section">
+    <div class="section-title">Oportunidad de posicionamiento</div>
+    <div class="kw-grid">
+      <div class="kw-pill">academia de inglés en Torrelavega</div>
+      <div class="kw-pill">clases de inglés en Torrelavega</div>
+      <div class="kw-pill">inglés para niños en Torrelavega</div>
+      <div class="kw-pill">inglés para adultos en Torrelavega</div>
+      <div class="kw-pill">inglés para empresas en Torrelavega</div>
+      <div class="kw-pill">preparación Cambridge en Torrelavega</div>
+      <div class="kw-pill">preparación Aptis en Torrelavega</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Plan de acción -->
+  <div class="section">
+    <div class="section-title">Plan de acción — haz clic en cada fase para ver las acciones</div>
+    <div class="fases-grid">
+
+      <div class="fase-card" onclick="toggleFase(this)">
+        <div class="fase-num">FASE 1</div>
+        <div class="fase-name">Corrección urgente</div>
+        <div class="fase-tag tag-urgente">Prioridad alta</div>
+        <div class="fase-detail">
+          <div class="fase-item">Desindexar páginas residuales de plantilla</div>
+          <div class="fase-item">Corregir textos placeholder</div>
+          <div class="fase-item">Actualizar contenidos vencidos</div>
+          <div class="fase-item">Corregir enlaces al dominio de staging</div>
+          <div class="fase-item">Definir URLs canónicas y redirecciones</div>
+        </div>
+      </div>
+
+      <div class="fase-card" onclick="toggleFase(this)">
+        <div class="fase-num">FASE 2</div>
+        <div class="fase-name">Optimización on-page</div>
+        <div class="fase-tag tag-medio">Prioridad media</div>
+        <div class="fase-detail">
+          <div class="fase-item">Optimizar titles y meta descriptions</div>
+          <div class="fase-item">Revisar H1, H2 y estructura semántica</div>
+          <div class="fase-item">Reforzar contenido local en páginas clave</div>
+          <div class="fase-item">Mejorar enlazado interno estratégico</div>
+          <div class="fase-item">Revisar CTAs y consistencia editorial</div>
+        </div>
+      </div>
+
+      <div class="fase-card" onclick="toggleFase(this)">
+        <div class="fase-num">FASE 3</div>
+        <div class="fase-name">SEO local</div>
+        <div class="fase-tag tag-medio">Prioridad media</div>
+        <div class="fase-detail">
+          <div class="fase-item">Optimizar Google Business Profile</div>
+          <div class="fase-item">Unificar datos de contacto y negocio</div>
+          <div class="fase-item">Reforzar señales locales en el sitio</div>
+          <div class="fase-item">Promover reseñas y reputación local</div>
+          <div class="fase-item">Alinear web con presencia en Google Maps</div>
+        </div>
+      </div>
+
+      <div class="fase-card" onclick="toggleFase(this)">
+        <div class="fase-num">FASE 4</div>
+        <div class="fase-name">Contenido estratégico</div>
+        <div class="fase-tag tag-baja">Crecimiento</div>
+        <div class="fase-detail">
+          <div class="fase-item">Páginas dedicadas: niños, adultos, empresas</div>
+          <div class="fase-item">Landing preparación Cambridge y Aptis</div>
+          <div class="fase-item">FAQs, beneficios y metodología por servicio</div>
+          <div class="fase-item">Diferenciadores editoriales por audiencia</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Estimación -->
+  <div class="section">
+    <div class="section-title">Estimación de esfuerzo — fase de optimización</div>
+    <div class="est-grid">
+      <div class="est-card">
+        <div class="est-label">Corrección técnica y limpieza editorial</div>
+        <div class="est-value">6–10 h</div>
+      </div>
+      <div class="est-card">
+        <div class="est-label">Optimización on-page páginas clave</div>
+        <div class="est-value">8–12 h</div>
+      </div>
+      <div class="est-card">
+        <div class="est-label">SEO local y recomendaciones estructurales</div>
+        <div class="est-value">3–5 h</div>
+      </div>
+      <div class="est-card">
+        <div class="est-label">Ajustes y redacción de copys SEO</div>
+        <div class="est-value">4–8 h</div>
+      </div>
+    </div>
+    <div class="est-total">
+      <div class="est-total-label">Total estimado según nivel de profundidad</div>
+      <div class="est-total-val">21–35 h</div>
+    </div>
+  </div>
+
+  <!-- Inversión -->
+  <div class="section">
+    <div class="section-title">Inversión estimada</div>
+    <div class="inv-box">
+      <div class="inv-row">
+        <div class="inv-label">Tarifa por hora</div>
+        <div class="inv-val">$80.000 COP</div>
+      </div>
+      <div class="inv-row">
+        <div class="inv-label">Escenario básico (21 h)</div>
+        <div class="inv-val">$1.680.000 COP</div>
+      </div>
+      <div class="inv-row">
+        <div class="inv-label">Escenario completo (35 h)</div>
+        <div class="inv-val">$2.800.000 COP</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Tiempo invertido -->
+  <div class="section">
+    <div class="section-title">Tiempo invertido en este diagnóstico</div>
+    <div class="tiempo-box">
+      <div class="tiempo-title">Elaboración del diagnóstico inicial</div>
+      <div class="tiempo-row">
+        <span style="color:var(--text-muted)">Revisión del sitio, análisis SEO y consolidación del informe</span>
+        <span style="font-weight:500">2 h</span>
+      </div>
+      <div class="tiempo-row">
+        <span style="color:var(--text-muted)">Tarifa aplicada</span>
+        <span style="font-weight:500">$80.000 COP / h</span>
+      </div>
+      <div class="tiempo-row">
+        <span style="font-weight:500">Total a cobrar por esta fase</span>
+        <span class="tiempo-total">$160.000 COP</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nota final -->
+  <div class="nota-final">
+    Diagnóstico externo inicial basado en revisión pública del sitio web y contexto competitivo local. No incluye datos de Google Search Console, Google Analytics ni Google Business Profile. La estimación de horas puede variar según el nivel de profundidad y la intervención técnica requerida.
+  </div>
+
+</div>
+
+<script>
+  function toggleFase(el) {
+    const wasActive = el.classList.contains('active');
+    document.querySelectorAll('.fase-card').forEach(c => c.classList.remove('active'));
+    if (!wasActive) el.classList.add('active');
+  }
+</script>
+</body>
+</html>
